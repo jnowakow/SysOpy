@@ -193,7 +193,7 @@ int deleteOperation(struct MainTable *table, int blockIndex, int operationIndex)
     }
     free(table->blocks[blockIndex]->operation[operationIndex]);
     table->blocks[blockIndex]->operation[operationIndex] = NULL;
-
+    table->blocks[blockIndex]->size--;
     return 0;
 }
 
