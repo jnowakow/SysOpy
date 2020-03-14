@@ -1,0 +1,3 @@
+Z uzyskanych wyników można zauważyć, że kopiowanie jest zawsze szybsze przy użyciu funkcji bibliotecznych.
+Natomiast przyglądając się wynikom uzyskanym dla sortowania widać, że dla mniejszych ilości linii szybsze 
+są również funkcje biblioteczne, ale przy większej ilości linii wydajniejsze stają się funkcje systemowe.

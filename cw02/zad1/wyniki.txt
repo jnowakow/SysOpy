@@ -1,0 +1,192 @@
+Copy in mode lib file having 50000 lines 1 bytes each
+	USER_TIME: 0.000000l
+	SYSTEM_TIME: 0.000000l
+
+Copy in mode sys file having 50000 lines 1 bytes each
+	USER_TIME: 0.000000l
+	SYSTEM_TIME: 0.060000l
+
+Sort in mode lib file having 50000 lines 1 bytes each
+	USER_TIME: 4.230000l
+	SYSTEM_TIME: 6.770000l
+
+Sort in mode sys file having 50000 lines 1 bytes each
+	USER_TIME: 3.590000l
+	SYSTEM_TIME: 15.530000l
+
+Copy in mode lib file having 60000 lines 1 bytes each
+	USER_TIME: 0.000000l
+	SYSTEM_TIME: 0.000000l
+
+Copy in mode sys file having 60000 lines 1 bytes each
+	USER_TIME: 0.000000l
+	SYSTEM_TIME: 0.080000l
+
+Sort in mode lib file having 60000 lines 1 bytes each
+	USER_TIME: 6.150000l
+	SYSTEM_TIME: 9.800000l
+
+Sort in mode sys file having 60000 lines 1 bytes each
+	USER_TIME: 5.030000l
+	SYSTEM_TIME: 22.440000l
+
+Copy in mode lib file having 100000 lines 4 bytes each
+	USER_TIME: 0.000000l
+	SYSTEM_TIME: 0.000000l
+
+Copy in mode sys file having 100000 lines 4 bytes each
+	USER_TIME: 0.010000l
+	SYSTEM_TIME: 0.140000l
+
+Sort in mode lib file having 100000 lines 4 bytes each
+	USER_TIME: 1.070000l
+	SYSTEM_TIME: 3.680000l
+
+Sort in mode sys file having 100000 lines 4 bytes each
+	USER_TIME: 0.560000l
+	SYSTEM_TIME: 3.460000l
+
+Copy in mode lib file having 500000 lines 4 bytes each
+	USER_TIME: 0.010000l
+	SYSTEM_TIME: 0.000000l
+
+Copy in mode sys file having 500000 lines 4 bytes each
+	USER_TIME: 0.060000l
+	SYSTEM_TIME: 0.620000l
+
+Sort in mode lib file having 500000 lines 4 bytes each
+	USER_TIME: 5.930000l
+	SYSTEM_TIME: 21.230000l
+
+Sort in mode sys file having 500000 lines 4 bytes each
+	USER_TIME: 3.130000l
+	SYSTEM_TIME: 19.270000l
+
+Copy in mode lib file having 100000 lines 512 bytes each
+	USER_TIME: 0.000000l
+	SYSTEM_TIME: 0.050000l
+
+Copy in mode sys file having 100000 lines 512 bytes each
+	USER_TIME: 0.010000l
+	SYSTEM_TIME: 0.170000l
+
+Sort in mode lib file having 100000 lines 512 bytes each
+	USER_TIME: 1.250000l
+	SYSTEM_TIME: 4.660000l
+
+Sort in mode sys file having 100000 lines 512 bytes each
+	USER_TIME: 0.520000l
+	SYSTEM_TIME: 3.790000l
+
+Copy in mode lib file having 500000 lines 512 bytes each
+	USER_TIME: 0.020000l
+	SYSTEM_TIME: 0.230000l
+
+Copy in mode sys file having 500000 lines 512 bytes each
+	USER_TIME: 0.030000l
+	SYSTEM_TIME: 0.830000l
+
+Sort in mode lib file having 500000 lines 512 bytes each
+	USER_TIME: 6.750000l
+	SYSTEM_TIME: 25.750000l
+
+Sort in mode sys file having 500000 lines 512 bytes each
+	USER_TIME: 3.000000l
+	SYSTEM_TIME: 20.600000l
+
+Copy in mode lib file having 100000 lines 1024 bytes each
+	USER_TIME: 0.000000l
+	SYSTEM_TIME: 0.110000l
+
+Copy in mode sys file having 100000 lines 1024 bytes each
+	USER_TIME: 0.000000l
+	SYSTEM_TIME: 0.230000l
+
+Sort in mode lib file having 100000 lines 1024 bytes each
+	USER_TIME: 1.390000l
+	SYSTEM_TIME: 5.330000l
+
+Sort in mode sys file having 100000 lines 1024 bytes each
+	USER_TIME: 0.480000l
+	SYSTEM_TIME: 4.140000l
+
+Copy in mode lib file having 500000 lines 1024 bytes each
+	USER_TIME: 0.070000l
+	SYSTEM_TIME: 0.400000l
+
+Copy in mode sys file having 500000 lines 1024 bytes each
+	USER_TIME: 0.020000l
+	SYSTEM_TIME: 1.020000l
+
+Sort in mode lib file having 500000 lines 1024 bytes each
+	USER_TIME: 7.880000l
+	SYSTEM_TIME: 28.920000l
+
+Sort in mode sys file having 500000 lines 1024 bytes each
+	USER_TIME: 3.030000l
+	SYSTEM_TIME: 22.740000l
+
+Copy in mode lib file having 100000 lines 4096 bytes each
+	USER_TIME: 0.020000l
+	SYSTEM_TIME: 0.380000l
+
+Copy in mode sys file having 100000 lines 4096 bytes each
+	USER_TIME: 0.000000l
+	SYSTEM_TIME: 0.430000l
+
+Sort in mode lib file having 100000 lines 4096 bytes each
+	USER_TIME: 1.860000l
+	SYSTEM_TIME: 8.980000l
+
+Sort in mode sys file having 100000 lines 4096 bytes each
+	USER_TIME: 0.570000l
+	SYSTEM_TIME: 5.690000l
+
+Copy in mode lib file having 200000 lines 4096 bytes each
+	USER_TIME: 0.050000l
+	SYSTEM_TIME: 0.680000l
+
+Copy in mode sys file having 200000 lines 4096 bytes each
+	USER_TIME: 0.020000l
+	SYSTEM_TIME: 0.820000l
+
+Sort in mode lib file having 200000 lines 4096 bytes each
+	USER_TIME: 3.970000l
+	SYSTEM_TIME: 18.330000l
+
+Sort in mode sys file having 200000 lines 4096 bytes each
+	USER_TIME: 1.130000l
+	SYSTEM_TIME: 11.170000l
+
+Copy in mode lib file having 100000 lines 8192 bytes each
+	USER_TIME: 0.040000l
+	SYSTEM_TIME: 0.710000l
+
+Copy in mode sys file having 100000 lines 8192 bytes each
+	USER_TIME: 0.000000l
+	SYSTEM_TIME: 0.700000l
+
+Sort in mode lib file having 100000 lines 8192 bytes each
+	USER_TIME: 2.350000l
+	SYSTEM_TIME: 13.100000l
+
+Sort in mode sys file having 100000 lines 8192 bytes each
+	USER_TIME: 0.660000l
+	SYSTEM_TIME: 8.380000l
+
+Copy in mode lib file having 200000 lines 8192 bytes each
+	USER_TIME: 0.090000l
+	SYSTEM_TIME: 1.320000l
+
+Copy in mode sys file having 200000 lines 8192 bytes each
+	USER_TIME: 0.010000l
+	SYSTEM_TIME: 1.340000l
+
+Sort in mode lib file having 200000 lines 8192 bytes each
+	USER_TIME: 4.450000l
+	SYSTEM_TIME: 26.640000l
+
+Sort in mode sys file having 200000 lines 8192 bytes each
+	USER_TIME: 1.180000l
+	SYSTEM_TIME: 16.350000l
+
