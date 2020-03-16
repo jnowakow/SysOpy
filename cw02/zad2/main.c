@@ -262,6 +262,15 @@ void printUsage(){
     printf("usage is ./programName path [-maxdepth depth] [-atime n or -mtime n]\n");
 }
 
+void functionCallWrapper(char *path){
+    printf("Using stat: \n\n");
+    searchUsingStat(path, depthGlobal, modeGlobal, sgnGlobal, nGlobal);
+
+    printf("Using nftw: \n\n");
+    nftw(path, displayInfoNFTW, 10, FTW_PHYS);
+    
+
+}
 int main(int argc, char *argv[]){
     if (argc < 2){
         printf("Please specify directory to be searched\n");
@@ -270,11 +279,7 @@ int main(int argc, char *argv[]){
 
     // ./main path
     if (argc == 2){
-        printf("Using stat: \n\n");
-        searchUsingStat(argv[1], depthGlobal, modeGlobal, sgnGlobal, nGlobal);
-
-        printf("Using nftw: \n\n");
-        nftw(argv[1], displayInfoNFTW, 10, FTW_PHYS);
+        functionCallWrapper(argv[1]);
     }
     else if (argc == 4)
     {
@@ -282,11 +287,7 @@ int main(int argc, char *argv[]){
         if(strcmp(argv[2], "-maxdepth") == 0){
             depthGlobal = atoi(argv[3]);
             
-            printf("Using stat: \n\n");
-            searchUsingStat(argv[1], depthGlobal, modeGlobal, sgnGlobal, nGlobal);
-
-            printf("Using nftw: \n\n");
-            nftw(argv[1], displayInfoNFTW, 10, FTW_PHYS);
+            functionCallWrapper(argv[1]);
         }
         
         else if(strcmp(argv[2], "-atime") == 0){
@@ -298,11 +299,7 @@ int main(int argc, char *argv[]){
                 nGlobal = atoi(ptr);
                 sgnGlobal = 1;
                 
-                printf("Using stat: \n\n");
-                searchUsingStat(argv[1], depthGlobal, modeGlobal, sgnGlobal, nGlobal);
-
-                printf("Using nftw: \n\n");
-                nftw(argv[1], displayInfoNFTW, 10, FTW_PHYS);
+                functionCallWrapper(argv[1]);
             }
             // ./main path -atime -n
             else if(argv[3][0] == 45) // 45 is - in ASCII
@@ -311,11 +308,7 @@ int main(int argc, char *argv[]){
                 nGlobal = atoi(ptr);
                 sgnGlobal = -1;
 
-                printf("Using stat: \n\n");
-                searchUsingStat(argv[1], depthGlobal, modeGlobal, sgnGlobal, nGlobal);
-
-                printf("Using nftw: \n\n");
-                nftw(argv[1], displayInfoNFTW, 10, FTW_PHYS);
+                functionCallWrapper(argv[1]);
             }
             
             // ./main path -atime n
@@ -324,11 +317,7 @@ int main(int argc, char *argv[]){
                 nGlobal = atoi(argv[3]);
                 sgnGlobal = 0;
                 
-                printf("Using stat: \n\n");
-                searchUsingStat(argv[1], depthGlobal, modeGlobal, sgnGlobal, nGlobal);
-
-                printf("Using nftw: \n\n");
-                nftw(argv[1], displayInfoNFTW, 10, FTW_PHYS);
+                functionCallWrapper(argv[1]);
             }
             
         }
@@ -341,11 +330,7 @@ int main(int argc, char *argv[]){
                 nGlobal = atoi(ptr);
                 sgnGlobal = 1;
                 
-                printf("Using stat: \n\n");
-                searchUsingStat(argv[1], depthGlobal, modeGlobal, sgnGlobal, nGlobal);
-
-                printf("Using nftw: \n\n");
-                nftw(argv[1], displayInfoNFTW, 10, FTW_PHYS);
+                functionCallWrapper(argv[1]);
             }
             // ./main path -mtime -n
             else if(argv[3][0] == 45) // 45 is - in ASCII
@@ -354,11 +339,7 @@ int main(int argc, char *argv[]){
                 nGlobal = atoi(ptr);
                 sgnGlobal = -1;
 
-                printf("Using stat: \n\n");
-                searchUsingStat(argv[1], depthGlobal, modeGlobal, sgnGlobal, nGlobal);
-
-                printf("Using nftw: \n\n");
-                nftw(argv[1], displayInfoNFTW, 10, FTW_PHYS);
+                functionCallWrapper(argv[1]);
             }
             // ./main path -mtime n
             else
@@ -366,11 +347,7 @@ int main(int argc, char *argv[]){
                 nGlobal = atoi(argv[3]);
                 sgnGlobal = 0;
                 
-                printf("Using stat: \n\n");
-                searchUsingStat(argv[1], depthGlobal, modeGlobal, sgnGlobal, nGlobal);
-
-                printf("Using nftw: \n\n");
-                nftw(argv[1], displayInfoNFTW, 10, FTW_PHYS);
+                functionCallWrapper(argv[1]);
             }
             
         }
@@ -398,11 +375,7 @@ int main(int argc, char *argv[]){
                     nGlobal = atoi(ptr);
                     sgnGlobal = 1;
                     
-                    printf("Using stat: \n\n");
-                    searchUsingStat(argv[1], depthGlobal, modeGlobal, sgnGlobal, nGlobal);
-
-                    printf("Using nftw: \n\n");
-                    nftw(argv[1], displayInfoNFTW, 10, FTW_PHYS);
+                    functionCallWrapper(argv[1]);
                 }
                 // ./main path -maxdepth n -atime -m
                 else if(argv[5][0] == 45) // 45 is - in ASCII
@@ -411,11 +384,7 @@ int main(int argc, char *argv[]){
                     nGlobal = atoi(ptr);
                     sgnGlobal = -1;
 
-                    printf("Using stat: \n\n");
-                    searchUsingStat(argv[1], depthGlobal, modeGlobal, sgnGlobal, nGlobal);
-
-                    printf("Using nftw: \n\n");
-                    nftw(argv[1], displayInfoNFTW, 10, FTW_PHYS);
+                    functionCallWrapper(argv[1]);
                 }
                 // ./main path -maxdepth n -atime m
                 else
@@ -423,11 +392,7 @@ int main(int argc, char *argv[]){
                     nGlobal = atoi(argv[5]);
                     sgnGlobal = 0;
                     
-                    printf("Using stat: \n\n");
-                    searchUsingStat(argv[1], depthGlobal, modeGlobal, sgnGlobal, nGlobal);
-
-                    printf("Using nftw: \n\n");
-                    nftw(argv[1], displayInfoNFTW, 10, FTW_PHYS);
+                    functionCallWrapper(argv[1]);
                 }
                 
             }
@@ -439,11 +404,7 @@ int main(int argc, char *argv[]){
                     nGlobal = atoi(ptr);
                     sgnGlobal = 1;
                     
-                    printf("Using stat: \n\n");
-                    searchUsingStat(argv[1], depthGlobal, modeGlobal, sgnGlobal, nGlobal);
-
-                    printf("Using nftw: \n\n");
-                    nftw(argv[1], displayInfoNFTW, 10, FTW_PHYS);
+                    functionCallWrapper(argv[1]);
                 }
                 // ./main path -maxdepth n -mtime -m
                 else if(argv[5][0] == 45) // 45 is - in ASCII
@@ -452,11 +413,7 @@ int main(int argc, char *argv[]){
                     nGlobal = atoi(ptr);
                     sgnGlobal = -1;
 
-                    printf("Using stat: \n\n");
-                    searchUsingStat(argv[1], depthGlobal, modeGlobal, sgnGlobal, nGlobal);
-
-                    printf("Using nftw: \n\n");
-                    nftw(argv[1], displayInfoNFTW, 10, FTW_PHYS);
+                    functionCallWrapper(argv[1]);
                 }
                 // ./main path -maxdepth n -mtime m
                 else
@@ -464,11 +421,7 @@ int main(int argc, char *argv[]){
                     nGlobal = atoi(argv[5]);
                     sgnGlobal = 0;
                     
-                    printf("Using stat: \n\n");
-                    searchUsingStat(argv[1], depthGlobal, modeGlobal, sgnGlobal, nGlobal);
-
-                    printf("Using nftw: \n\n");
-                    nftw(argv[1], displayInfoNFTW, 10, FTW_PHYS);
+                    functionCallWrapper(argv[1]);
                 }
                 
             }
