@@ -93,11 +93,3 @@ runTest:
 	./main sort dataLib 200000 8192 lib
 	./main sort dataSys 200000 8192 sys
 	
-
-
-test4:
-	./main generate data $(COUNT) $(BYTES)
-	./main copy data dataLib $(COUNT) $(BYTES) lib
-	./main copy data dataSys $(COUNT) $(BYTES) sys
-	./main sort dataLib $(COUNT) $(BYTES) lib
-	./main sort dataSys $(COUNT) $(BYTES) sys
