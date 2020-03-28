@@ -1,0 +1,3 @@
+Testując poszczególne opcje programu można zauważyć, że ustawienia dotyczące blokowania i ignorowania sygnałów są przekazywane do procesów
+potomnych zarówno, gdy wykonamy funkcję fork lub exec. Jeśli w procesie rodzica została zaimplementowana obsługa sygnałów z użyciem funkcji
+signal to ta obsługa zostaje zachowana w procesie potomnym utworzonym komendą fork.
