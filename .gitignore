@@ -1,4 +1,6 @@
 main
 child
+catcher
+sender
 *.o
 cw02/zad2/test/
