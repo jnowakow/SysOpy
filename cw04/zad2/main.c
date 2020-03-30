@@ -12,11 +12,11 @@ void checkIfBlocked(){
     sigpending(&blocked);
             
     if(sigismember(&blocked, SIGUSR1) == 1){
-        printf("Signal SIGUSR1 is blocked\n");
+        printf("Signal SIGUSR1 is pending\n");
     }
     else
     {
-        printf("Signal SIGUSR1 isn't blocked\n");
+        printf("Signal SIGUSR1 isn't pending\n");
     }
 }
 
@@ -68,7 +68,12 @@ int main(int argc, char **argv){
         if(pid == 0){
             printf("\nOutput from chlid\n");
             raise(SIGUSR1);
-            execl("./child", "./child", "handler", NULL);
+        }
+         else{
+            pid_t pid2 = fork();
+            if(pid2 == 0){
+                execl("./child", "./child", "handler", NULL);
+            }
         }    
     }
 
@@ -89,6 +94,12 @@ int main(int argc, char **argv){
         pid_t pid = fork();
         if(pid == 0){
             printf("\nOutput from chlid\n");
+            
+            printf("Checking signal raised in parent\n");
+
+            checkIfBlocked();
+
+            printf("\nChecking signal raised in current procces\n");
             raise(SIGUSR1);
             checkIfBlocked();
         }

@@ -14,22 +14,38 @@ int main(int argc, char **argv){
 
     else if (strcmp(argv[1], "mask") == 0)
     {
-        raise(SIGUSR1);
+        printf("Checking signal raised in parent\n");
 
         sigset_t set;
         sigpending(&set);
         
         if(sigismember(&set, SIGUSR1) == 1){
-            printf("Signal SIGUSR1 is blocked\n");
+            printf("Signal SIGUSR1 is pending\n");
         }
         else
         {
-            printf("Signal SIGUSR1 isn't blocked\n");
+            printf("Signal SIGUSR1 isn't pending\n");
+        }
+        
+        printf("\nChecking signal raised in currrent procces\n");
+    
+        raise(SIGUSR1);
+
+        sigpending(&set);
+        
+        if(sigismember(&set, SIGUSR1) == 1){
+            printf("Signal SIGUSR1 is pending\n");
+        }
+        else
+        {
+            printf("Signal SIGUSR1 isn't pending\n");
         }
         
     }
     else if (strcmp(argv[1], "handler") == 0){
+        printf("Checking handling procedure\n");
         raise(SIGUSR1);
+        printf("After raising SIGUSR1\n");
     }
     else
     {
