@@ -12,10 +12,8 @@
 int clientsIDs[MAX_CLIENTS];
 int availability[MAX_CLIENTS];
 key_t clientKeys[MAX_CLIENTS];
-pid_t clientsPIDS[MAX_CLIENTS];
 int nextID = 1; //ids begin from one to avoid initializing ids' array
 int serverQueue = -1;
-//int acitve = TRUE;
 
 //inform all active clients and wait for STOP messages
 void endWork()
@@ -39,7 +37,7 @@ void endWork()
             }
 
             //wait for returnig stop message from client
-            if (msgrcv(clientQueue, &msg, MSG_SIZE, STOP, MSG_NOERROR) < 0)
+            if (msgrcv(clientQueue, &msg, MSG_SIZE, STOP, 0) < 0)
             {
                 perror("Shuting down, can't receive message");
                 msgctl(serverQueue, IPC_RMID, NULL);
@@ -60,7 +58,7 @@ void sigintHandler()
     exit(0); // just exit normally because atexit function is responsible to remove queues
 }
 
-void init(key_t clientKey, pid_t pid)
+void init(key_t clientKey)
 {
     int i;
     for (i = 0; i < MAX_CLIENTS; i++){
@@ -90,7 +88,6 @@ void init(key_t clientKey, pid_t pid)
     clientsIDs[i] = nextID;
     clientKeys[i] = clientKey;
     availability[i] = TRUE;
-    clientsPIDS[i] = pid;
     
     //inceremnt id 
     nextID++;
@@ -102,7 +99,7 @@ void list(){
 
     for(int i = 0; i < MAX_CLIENTS; i++){
         if(clientsIDs[i] > 0){
-            printf("%d - %s\n", clientsIDs[i], (availability[i] == TRUE) ? "✓" : "✕" );
+            printf("%d          -  %s\n", clientsIDs[i], (availability[i] == TRUE) ? "✓" : "✕" );
         }
     }
     printf("---------------\n");
@@ -132,9 +129,9 @@ void connect(int clientID, int withID){
     int toKey = clientKeys[to];
 
     //send msg to first client
-    int queue = msgget(fromKey, IPC_CREAT);
+    int queue1 = msgget(fromKey, IPC_CREAT);
 
-    if(queue == -1){
+    if(queue1 == -1){
         printf("can't open client queue\n");
         return;
     }
@@ -143,15 +140,15 @@ void connect(int clientID, int withID){
     msg1.clientKey = toKey;
     msg1.mtype = CONNECT;
 
-    if(msgsnd(queue, &msg1, MSG_SIZE, 0) != 0){
+    if(msgsnd(queue1, &msg1, MSG_SIZE, 0) != 0){
         printf("can't send message\n");
         return;
     } 
 
     //send msg to second client
-    int otherQueue = msgget(toKey, IPC_CREAT);
+    int queue2 = msgget(toKey, IPC_CREAT);
     
-    if(otherQueue == -1){
+    if(queue2 == -1){
         printf("can't open client queue\n");
         return;
     }
@@ -159,14 +156,13 @@ void connect(int clientID, int withID){
     msgbuf msg2;
     msg2.clientKey = fromKey;
     msg2.mtype = CONNECT;
-    strcpy(msg2.mtext, "WAIT");
 
-    if(msgsnd(otherQueue, &msg2, MSG_SIZE, 0) != 0){
+    if(msgsnd(queue2, &msg2, MSG_SIZE, 0) != 0){
         printf("can't send message\n");
         return;
     } 
 
-    kill(clientsPIDS[to], SIGUSR1);
+    
     //set as not avaible
     availability[from] = FALSE;
     availability[to] = FALSE;
@@ -199,26 +195,26 @@ void proceedMsg(msgbuf *msg)
 {
     switch (msg->mtype){
     case STOP:
-        printf("Removing %d from clients\n", msg->clientID);
+        printf("\nRemoving %d from clients\n", msg->clientID);
         stop(msg->clientID);
         break;
     case DISCONNECT:
-        printf("Disconnecting %d\n", msg->clientID);
+        printf("\nDisconnecting %d\n", msg->clientID);
         disconnect(msg->clientID);
         break;
     case LIST:
         list();
         break;
     case CONNECT:
-        printf("Connecting %d with %s\n", msg->clientID, msg->mtext);
+        printf("\nConnecting %d with %s\n", msg->clientID, msg->mtext);
         connect(msg->clientID, atoi(msg->mtext));
         break;
     case INIT:
-        printf("Got init message\n");
-        init(msg->clientKey, msg->pid);
+        printf("\nLogging new client\n");
+        init(msg->clientKey);
         break;
     default:
-        printf("No such message type\n");
+        printf("\nNo such message type\n");
         break;
     }
 }
@@ -257,7 +253,6 @@ int main(int argc, char **argv)
         //are taken with priority
         if (msgrcv(serverQueue, &msg, MSG_SIZE, -INIT, 0) == -1){
             perror("Can't receive message");
-            endWork(); //shutdown server
             exit(1);
         }
 

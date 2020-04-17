@@ -19,27 +19,13 @@ int otherQueue = -1;
 
 void endWork()
 {
-
     //remove queue
     if (msgctl(clientQueue, IPC_RMID, NULL) == -1)
     {
         perror("Can't remove queue");
         exit(1);
     }
-
-    //send STOP message to server
-    msgbuf msg2;
-    msg2.mtype = STOP;
-    msg2.clientID = myId;
-
-    if (msgsnd(serverQueue, &msg2, MSG_SIZE, 0) < 0)
-    {
-        perror("Can't send message to server");
-        exit(1);
-    }
 }
-
-
 
 void init(key_t clientKey, char *path)
 {
@@ -61,7 +47,6 @@ void init(key_t clientKey, char *path)
     msgbuf msg;
     msg.mtype = INIT;
     msg.clientKey = clientKey;
-    msg.pid = getpid();
 
     if (msgsnd(serverQueue, &msg, MSG_SIZE, 0) != 0)
     {
@@ -74,8 +59,6 @@ void init(key_t clientKey, char *path)
 void run()
 {
     char *cmd = (char *)calloc(MAX_LEN, sizeof(char));
-
-    //STOP = 0, DISCONNECT = 1, LIST = 2, CONNECT = 3, INIT = 4, END = 5, NORMAL = 6
 
     fgets(cmd, MAX_LEN, stdin);
     cmd = strtok(cmd, "\n");
@@ -92,6 +75,7 @@ void run()
             exit(1); //TODO handle error
         }
         //end work
+
         exit(0);
     }
     else if (strcmp(cmd, "DISCONNECT") == 0)
@@ -148,7 +132,7 @@ void run()
         }
         else
         {
-            printf("No such command!\n");
+            printf("\nNo such command!\n");
             waitingForMsg = FALSE;
         }
     }
@@ -158,7 +142,7 @@ void run()
 
 void endConnection()
 {
-    printf("Finishing connection\n");
+    printf("\nFinishing connection\n");
     msgbuf msg;
     msg.mtype = DISCONNECT;
     msg.clientID = myId;
@@ -168,36 +152,22 @@ void endConnection()
         printf("can't send message\n");
         exit(1);
     }
+
+    otherQueue = -1;
 }
 
-void sendMsgToOther()
+void sendStop()
 {
-    char *buff = (char *)calloc(MAX_LEN, sizeof(char));
+    //send STOP message to server
+    msgbuf msg2;
+    msg2.mtype = STOP;
+    msg2.clientID = myId;
 
-    printf("You: ");
-    fgets(buff, MAX_LEN, stdin);
-
-    msgbuf toOther;
-    toOther.clientID = myId;
-    buff = strtok(buff, "\n");
-    if (strcmp(buff, "END") == 0)
+    if (msgsnd(serverQueue, &msg2, MSG_SIZE, 0) < 0)
     {
-        toOther.mtype = END;
-        endConnection();
-    }
-    else
-    {
-        toOther.mtype = NORMAL;
-        strcpy(toOther.mtext, buff);
-    }
-
-    if (msgsnd(otherQueue, &toOther, MSG_SIZE, 0) != 0)
-    {
-        printf("can't send message\n");
+        perror("Can't send message to server");
         exit(1);
     }
-
-    free(buff);
 }
 
 void proceedMsg(msgbuf *msg)
@@ -206,22 +176,25 @@ void proceedMsg(msgbuf *msg)
     {
     case INIT:
         if (!acitvated)
-        { //if this client was't initialized activate it esle ignore
+        { //if this client was't initialized activate it else ignore
             acitvated = TRUE;
             myId = msg->clientID;
             waitingForMsg = FALSE;
         }
         else
         {
-            printf("Another init message received! Check server\n");
+            printf("\nAnother init message received! Check server\n");
         }
 
         break;
     case STOP:
-        exit(0); //if server is stoping end work
+        sendStop();
+        exit(0);
+
         break;
     case CONNECT:
-        printf("connected\n");
+        printf("\nConnected with other client\n");
+        //open other's client queue
         otherQueue = msgget(msg->clientKey, IPC_CREAT);
 
         if (otherQueue == -1)
@@ -229,27 +202,11 @@ void proceedMsg(msgbuf *msg)
             perror("Can't open other queue");
             exit(1);
         }
-        if(strcmp(msg->mtext,"WAIT") == 0){
-            printf("wahat");
-            waitingForMsg = TRUE;
-        }
-        else
-        {
-            printf("aaa \n");
-            sendMsgToOther();
-            waitingForMsg = TRUE;
-        }
-        
+
+        waitingForMsg = FALSE;
+
         break;
-    case END:
-        endConnection();
-        waitingForMsg = TRUE;
-        break;
-    case NORMAL:
-        printf("Other: %s\n", msg->mtext);
-        sendMsgToOther();
-        waitingForMsg = TRUE;
-        break;
+
     default:
         break;
     }
@@ -257,22 +214,10 @@ void proceedMsg(msgbuf *msg)
 
 void sigintHandler()
 {
+    //send STOP message to server
+    sendStop();
     exit(0); // just exit normally because atexit function is responsible to clean up
 }
-
-void sigUsrHandler()
-{
-    msgbuf msg;
-
-    if (msgrcv(clientQueue, &msg, MSG_SIZE, -INIT, 0) == -1)
-    {
-        perror("Can't receive message");
-        endWork();
-        exit(1);
-    }
-    proceedMsg(&msg);
-}
-
 
 int main(int argc, char **argv)
 {
@@ -288,11 +233,6 @@ int main(int argc, char **argv)
         return 1;
     }
 
-    if (signal(SIGUSR1, sigUsrHandler) == SIG_ERR)
-    {
-        perror("Can't establish SIGUSR1 handler");
-        return 1;
-    }
 
     char *path = getenv("HOME");
     //instruction says that there should be some number from header.h
@@ -319,10 +259,10 @@ int main(int argc, char **argv)
 
     while (TRUE)
     {
-        //consider message priority so -NORMAL as type
+        //consider message priority so -INIT as type
         if (waitingForMsg)
         {
-            if (msgrcv(clientQueue, &msg, MSG_SIZE, -NORMAL, 0) == -1)
+            if (msgrcv(clientQueue, &msg, MSG_SIZE, -INIT, 0) == -1)
             {
                 perror("Can't receive message");
                 endWork();
