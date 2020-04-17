@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <signal.h>
+#include <string.h>
 
 #include <sys/msg.h>
 #include <sys/ipc.h>
@@ -11,13 +12,13 @@
 int clientsIDs[MAX_CLIENTS];
 int availability[MAX_CLIENTS];
 key_t clientKeys[MAX_CLIENTS];
+pid_t clientsPIDS[MAX_CLIENTS];
 int nextID = 1; //ids begin from one to avoid initializing ids' array
-int activeClients = 0;
 int serverQueue = -1;
 //int acitve = TRUE;
 
 //inform all active clients and wait for STOP messages
-void shutDown()
+void endWork()
 {
     //send stop message to all clients and wait for reponses
     for (int i = 0; i < MAX_CLIENTS; i++)
@@ -59,7 +60,7 @@ void sigintHandler()
     exit(0); // just exit normally because atexit function is responsible to remove queues
 }
 
-void init(key_t clientKey)
+void init(key_t clientKey, pid_t pid)
 {
     int i;
     for (i = 0; i < MAX_CLIENTS; i++){
@@ -89,6 +90,7 @@ void init(key_t clientKey)
     clientsIDs[i] = nextID;
     clientKeys[i] = clientKey;
     availability[i] = TRUE;
+    clientsPIDS[i] = pid;
     
     //inceremnt id 
     nextID++;
@@ -147,9 +149,9 @@ void connect(int clientID, int withID){
     } 
 
     //send msg to second client
-    queue = msgget(toKey, IPC_CREAT);
+    int otherQueue = msgget(toKey, IPC_CREAT);
     
-    if(queue == -1){
+    if(otherQueue == -1){
         printf("can't open client queue\n");
         return;
     }
@@ -157,12 +159,14 @@ void connect(int clientID, int withID){
     msgbuf msg2;
     msg2.clientKey = fromKey;
     msg2.mtype = CONNECT;
+    strcpy(msg2.mtext, "WAIT");
 
-    if(msgsnd(queue, &msg2, MSG_SIZE, 0) != 0){
+    if(msgsnd(otherQueue, &msg2, MSG_SIZE, 0) != 0){
         printf("can't send message\n");
         return;
     } 
 
+    kill(clientsPIDS[to], SIGUSR1);
     //set as not avaible
     availability[from] = FALSE;
     availability[to] = FALSE;
@@ -211,7 +215,7 @@ void proceedMsg(msgbuf *msg)
         break;
     case INIT:
         printf("Got init message\n");
-        init(msg->clientKey);
+        init(msg->clientKey, msg->pid);
         break;
     default:
         printf("No such message type\n");
@@ -221,7 +225,7 @@ void proceedMsg(msgbuf *msg)
 
 int main(int argc, char **argv)
 {
-    if (atexit(shutDown) != 0){
+    if (atexit(endWork) != 0){
         perror("Can't set atexit function");
         return 1;
     }
@@ -253,7 +257,7 @@ int main(int argc, char **argv)
         //are taken with priority
         if (msgrcv(serverQueue, &msg, MSG_SIZE, -INIT, 0) == -1){
             perror("Can't receive message");
-            shutDown(); //shutdown server
+            endWork(); //shutdown server
             exit(1);
         }
 

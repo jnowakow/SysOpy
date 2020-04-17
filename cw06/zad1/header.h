@@ -13,26 +13,14 @@ typedef struct msgbuf{
     char mtext[MAX_LEN];
     int clientID;
     key_t clientKey;
+    int pid;
 } msgbuf;
 
-//types of messages between server and client 
-typedef enum serv_cli_type{
-    STOP = 0, DISCONNECT = 1, LIST = 2, CONNECT = 3, INIT = 4
-} serv_cli_type;
-
-typedef struct clientsMsg
-{
-    long mtype;
-    char mtext[MAX_LEN];
-} clientsMsg;
-
-typedef enum cli_cli_type{
-    END = 0, NORMAL = 1
-} cli_cli_type;
-
-
-
-
+//types of messages between server and client
+//last two types are for comunnication between clients
+typedef enum type{
+    STOP = 1, DISCONNECT = 2, LIST = 3, CONNECT = 4, INIT = 5, END = 6, NORMAL = 7
+} type;
 
 const size_t MSG_SIZE = sizeof(msgbuf) - sizeof(long);
 
