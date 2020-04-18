@@ -12,11 +12,12 @@
 int clientsIDs[MAX_CLIENTS];
 int availability[MAX_CLIENTS];
 key_t clientKeys[MAX_CLIENTS];
+pid_t clientPids[MAX_CLIENTS];
 int nextID = 1; //ids begin from one to avoid initializing ids' array
 int serverQueue = -1;
 
 //inform all active clients and wait for STOP messages
-void endWork()
+void removeQueue()
 {
     //send stop message to all clients and wait for reponses
     for (int i = 0; i < MAX_CLIENTS; i++)
@@ -35,9 +36,14 @@ void endWork()
                 msgctl(serverQueue, IPC_RMID, NULL);
                 exit(1);
             }
+            
+            
+            //SEND THE SIGNAL !!!
+            kill(clientPids[i], SIGUSR1);
+
 
             //wait for returnig stop message from client
-            if (msgrcv(clientQueue, &msg, MSG_SIZE, STOP, 0) < 0)
+            if (msgrcv(serverQueue, &msg, MSG_SIZE, STOP, 0) < 0)
             {
                 perror("Shuting down, can't receive message");
                 msgctl(serverQueue, IPC_RMID, NULL);
@@ -58,7 +64,7 @@ void sigintHandler()
     exit(0); // just exit normally because atexit function is responsible to remove queues
 }
 
-void init(key_t clientKey)
+void init(key_t clientKey, pid_t clientPid)
 {
     int i;
     for (i = 0; i < MAX_CLIENTS; i++){
@@ -87,6 +93,7 @@ void init(key_t clientKey)
 
     clientsIDs[i] = nextID;
     clientKeys[i] = clientKey;
+    clientPids[i] = clientPid;
     availability[i] = TRUE;
     
     //inceremnt id 
@@ -188,6 +195,7 @@ void stop(int clientID){
     clientsIDs[i] = 0;
     clientKeys[i] = 0;
     availability[i] = FALSE;
+    clientPids[i] = 0;
 }
 
 
@@ -211,7 +219,7 @@ void proceedMsg(msgbuf *msg)
         break;
     case INIT:
         printf("\nLogging new client\n");
-        init(msg->clientKey);
+        init(msg->clientKey, msg->clientPid);
         break;
     default:
         printf("\nNo such message type\n");
@@ -221,7 +229,7 @@ void proceedMsg(msgbuf *msg)
 
 int main(int argc, char **argv)
 {
-    if (atexit(endWork) != 0){
+    if (atexit(removeQueue) != 0){
         perror("Can't set atexit function");
         return 1;
     }

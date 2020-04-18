@@ -13,6 +13,7 @@ typedef struct msgbuf{
     char mtext[MAX_LEN];
     int clientID;
     key_t clientKey;
+    pid_t clientPid;
 } msgbuf;
 
 //types of messages between server and client

@@ -17,7 +17,7 @@ int serverQueue = -1;
 int clientQueue = -1;
 int otherQueue = -1;
 
-void endWork()
+void removeQueue()
 {
     //remove queue
     if (msgctl(clientQueue, IPC_RMID, NULL) == -1)
@@ -47,6 +47,7 @@ void init(key_t clientKey, char *path)
     msgbuf msg;
     msg.mtype = INIT;
     msg.clientKey = clientKey;
+    msg.clientPid = getpid();
 
     if (msgsnd(serverQueue, &msg, MSG_SIZE, 0) != 0)
     {
@@ -139,23 +140,6 @@ void run()
 
     free(cmd);
 }
-
-void endConnection()
-{
-    printf("\nFinishing connection\n");
-    msgbuf msg;
-    msg.mtype = DISCONNECT;
-    msg.clientID = myId;
-
-    if (msgsnd(serverQueue, &msg, MSG_SIZE, 0) != 0)
-    {
-        printf("can't send message\n");
-        exit(1);
-    }
-
-    otherQueue = -1;
-}
-
 void sendStop()
 {
     //send STOP message to server
@@ -206,6 +190,7 @@ void proceedMsg(msgbuf *msg)
         waitingForMsg = FALSE;
 
         break;
+        
 
     default:
         break;
@@ -219,9 +204,24 @@ void sigintHandler()
     exit(0); // just exit normally because atexit function is responsible to clean up
 }
 
+void sigusrHandler()
+{
+    msgbuf msg;
+    
+    if (msgrcv(clientQueue, &msg, MSG_SIZE, -INIT, 0) == -1)
+    {
+        perror("Can't receive message");
+        removeQueue();
+        exit(1);
+    }
+    
+    proceedMsg(&msg);
+
+}
+
 int main(int argc, char **argv)
 {
-    if (atexit(endWork) != 0)
+    if (atexit(removeQueue) != 0)
     {
         perror("Can't set atexit function");
         return 1;
@@ -233,6 +233,11 @@ int main(int argc, char **argv)
         return 1;
     }
 
+    if (signal(SIGUSR1, sigusrHandler) == SIG_ERR)
+    {
+        perror("Can't establish SIGINT handler");
+        return 1;
+    }
 
     char *path = getenv("HOME");
     //instruction says that there should be some number from header.h
@@ -265,7 +270,7 @@ int main(int argc, char **argv)
             if (msgrcv(clientQueue, &msg, MSG_SIZE, -INIT, 0) == -1)
             {
                 perror("Can't receive message");
-                endWork();
+                removeQueue();
                 exit(1);
             }
 
