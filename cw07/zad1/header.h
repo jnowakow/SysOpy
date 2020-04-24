@@ -1,12 +1,17 @@
 #ifndef header
 #define header
 
-#define MAX_ORDERS_COUNT 128
-#define ORDERS_KEY "/bin" //to generate key for shared memory with orders and semafore to synchronize access to it 
+#define KEY getenv("HOME") //to generate key for shared memory with orders and semafore to synchronize access to it 
 #define ADD_KEY "/root" // to generate key for semaphore indicating if next order can be added
 #define PREPARE_KEY "/lib" //to generate key for semaphore indicating if next order can be prepared
 #define SEND_KEY "/etc" //to generate key for semaphore indicating if next order can be removed
-#define PROJECT_ID 113
+#define LOCK 213
+#define ADD 113
+#define PREPARE 117
+#define SEND 133
+
+#define PERMISSIONS 0666
+#define MAX_ORDERS_COUNT 10
 #define TRUE 1
 #define FALSE 0
 

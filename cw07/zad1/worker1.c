@@ -12,7 +12,6 @@
 
 #include "header.h"
 
-
 shared_orders *orders;
 
 void handler()
@@ -20,17 +19,19 @@ void handler()
     exit(0);
 }
 
-void logger(pid_t pid, int order_size, int to_prepare, int to_send){
+void logger(pid_t pid, int order_size, int to_prepare, int to_send)
+{
     struct timespec tm;
     clock_gettime(CLOCK_REALTIME, &tm);
 
     printf("(%d %lds %ldms) Dostałem liczbę %d. Liczba zamówień do przygotowania: %d. Liczba zamówień do wysłania: %d\n",
-        pid, tm.tv_sec, tm.tv_nsec%1000, order_size, to_prepare, to_send);
-
+           pid, tm.tv_sec, tm.tv_nsec % 1000, order_size, to_prepare, to_send);
 }
 
-void detach_shm(){
-    if(shmdt((void *)orders) == -1){
+void detach_shm()
+{
+    if (shmdt((void *)orders) == -1)
+    {
         perror("shmdt");
         exit(1);
     }
@@ -44,6 +45,8 @@ int main(int argc, char **argv)
         fprintf(stderr, "This program takes no arguments\n");
         return 1;
     }
+
+    //printf("HELLO!\n");
 
     int can_add_sem;
     int can_prepare_sem;
@@ -65,7 +68,7 @@ int main(int argc, char **argv)
         return 1;
     }
 
-    key = ftok(ADD_KEY, PROJECT_ID);
+    key = ftok(KEY, ADD);
     if (key == -1)
     {
         perror("ftok");
@@ -79,7 +82,7 @@ int main(int argc, char **argv)
         return 1;
     }
 
-    key = ftok(PREPARE_KEY, PROJECT_ID);
+    key = ftok(KEY, PREPARE);
     if (key == -1)
     {
         perror("ftok");
@@ -93,7 +96,7 @@ int main(int argc, char **argv)
         return 1;
     }
 
-    key = ftok(ORDERS_KEY, PROJECT_ID);
+    key = ftok(KEY, LOCK);
     if (key == -1)
     {
         perror("ftok");
@@ -121,7 +124,8 @@ int main(int argc, char **argv)
         return 1;
     }
 
-    srand(time(0));
+    time_t seed = (time_t) getpid() * 1000;
+    srand(time(&seed));
 
     struct sembuf asem;
 
@@ -129,10 +133,14 @@ int main(int argc, char **argv)
     asem.sem_op = 0;
     asem.sem_flg = 0;
 
+    semun sem_attr;
+    
+
     while (TRUE)
     {
         int order_size = rand() % 100 + 1; //get random size of order
-
+        
+        asem.sem_op = 0;
         //wait till next order can be added
         if (semop(can_add_sem, &asem, 1) == -1)
         {
@@ -148,7 +156,7 @@ int main(int argc, char **argv)
             perror("semop locker");
             return 1;
         }
-
+        
         orders->orders[orders->next_insert_idx] = order_size;
         (orders->next_insert_idx)++;
 
@@ -170,12 +178,10 @@ int main(int argc, char **argv)
         }
 
         //mark that there is order to prepare
-        asem.sem_op = 0;
-
-        if (semop(can_prepare_sem, &asem, 1) == -1)
-        {
-            perror("semop add_sem");
-            return 1;
+        sem_attr.val = 0;
+        if (semctl(can_prepare_sem, 0, SETVAL, sem_attr) == -1){
+            perror("semctl SETVAL");
+            exit(1);
         }
 
         logger(pid, order_size, orders->to_prepare, orders->to_send);
