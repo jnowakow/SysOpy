@@ -9,3 +9,6 @@ cw05/zad3/producer
 cw05/zad3/consumer
 server
 client
+packer
+collector
+.vscodes
