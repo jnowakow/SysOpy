@@ -1,0 +1,81 @@
+
+####### block -> 1 threads #######
+total time: 0s 1034ms
+thread 140686641002240: 0s 694ms
+
+####### interleaved -> 1 threads #######
+total time: 0s 1230ms
+thread 139742073566976: 0s 900ms
+
+####### sign -> 1 threads #######
+total time: 0s 1818ms
+thread 140105915479808: 0s 1521ms
+
+####### block -> 2 threads #######
+total time: 0s 725ms
+thread 140530086414080: 0s 378ms
+thread 140530078021376: 0s 378ms
+
+####### interleaved -> 2 threads #######
+total time: 0s 791ms
+thread 140019585140480: 0s 387ms
+thread 140019576747776: 0s 413ms
+
+####### sign -> 2 threads #######
+total time: 0s 1769ms
+thread 140290403239680: 0s 1569ms
+thread 140290394846976: 0s 1457ms
+
+####### block -> 4 threads #######
+total time: 0s 641ms
+thread 140122220398336: 0s 251ms
+thread 140122212005632: 0s 336ms
+thread 140122203612928: 0s 296ms
+thread 140122195220224: 0s 335ms
+
+####### interleaved -> 4 threads #######
+total time: 0s 927ms
+thread 140220215117568: 0s 403ms
+thread 140220206724864: 0s 389ms
+thread 140220198332160: 0s 647ms
+thread 140220189939456: 0s 368ms
+
+####### sign -> 4 threads #######
+total time: 0s 2569ms
+thread 140380889937664: 0s 1200ms
+thread 140380881544960: 0s 2364ms
+thread 140380873152256: 0s 1826ms
+thread 140380864759552: 0s 1863ms
+
+####### block -> 8 threads #######
+total time: 0s 552ms
+thread 139989424416512: 0s 188ms
+thread 139989416023808: 0s 204ms
+thread 139989407631104: 0s 195ms
+thread 139989399238400: 0s 176ms
+thread 139989390845696: 0s 167ms
+thread 139989382452992: 0s 140ms
+thread 139989374060288: 0s 136ms
+thread 139989365667584: 0s 158ms
+
+####### interleaved -> 8 threads #######
+total time: 0s 578ms
+thread 140503803295488: 0s 225ms
+thread 140503794902784: 0s 193ms
+thread 140503786510080: 0s 194ms
+thread 140503778117376: 0s 193ms
+thread 140503769724672: 0s 194ms
+thread 140503761331968: 0s 192ms
+thread 140503752939264: 0s 125ms
+thread 140503744546560: 0s 151ms
+
+####### sign -> 8 threads #######
+total time: 0s 3635ms
+thread 140483529090816: 0s 1934ms
+thread 140483520698112: 0s 2249ms
+thread 140483512305408: 0s 2401ms
+thread 140483503912704: 0s 2322ms
+thread 140483495520000: 0s 2232ms
+thread 140483487127296: 0s 2047ms
+thread 140483478734592: 0s 1161ms
+thread 140483470341888: 0s 1167ms
